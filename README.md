@@ -39,3 +39,10 @@ export default App;
 
 ## 效果
 
+手机效果
+
+![mobile](./1.png)
+
+其他效果
+
+![other](./2.png)
