@@ -1,0 +1,32 @@
+{
+  "name": "react-calendar",
+  "version": "1.0.0",
+  "description": "react calendar",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "calendar"
+  ],
+  "author": "ryn",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.13.2",
+    "babel-helper-builder-react-jsx": "^6.9.0",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-flow-strip-types": "^6.8.0",
+    "babel-plugin-transform-react-jsx": "^6.8.0",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-es2016": "^6.11.3",
+    "babel-preset-react": "^6.11.1",
+    "css-loader": "^0.23.1",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.1"
+  },
+  "dependencies": {
+    "ms": "^0.7.1",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0"
+  }
+}
