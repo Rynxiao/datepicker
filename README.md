@@ -11,6 +11,7 @@
 3. 历史记录选择日期
 4. 支持tag标识
 5. 支持选择日期回调
+6. 屏幕适应
 
 ---------------------
 
@@ -24,10 +25,17 @@ import Calendar from './Calendar';
 const App = React.createClass({
     render() {
         return (
-            <Calendar onSelectDate={this.selectDate} year='2016' month='8' day='7' tags={[5, 22]} />
+            <Calendar onSelectDate={this.selectDate} 
+                year='2016' 
+                month='8' 
+                day='7' 
+                tags={[5, 22]} />
         );
     }
 });
 
 export default App;
 ```
+
+## 效果
+
