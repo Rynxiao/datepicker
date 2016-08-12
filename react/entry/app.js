@@ -10,12 +10,34 @@ import ReactDOM from 'react-dom';
 import Calendar from '../components/Calendar';
 
 const App = React.createClass({
+
+    getInitialState() {
+        return {
+            tags : [5, 21]
+        }
+    },
+
     selectDate(year, month, day) {
-        alert("当前日期为：" + year + '年' + month + '月' + day + '日' );
+        console.log("选择时间为：" + year + '年' + month + '月' + day + '日' );
+    },
+    previousMonth(year, month) {
+        console.log("当前日期为：" + year + '年' + month + '月');
+        this.setState({tags : [7, 11]});
+    },
+    nextMonth(year, month) {
+        console.log("当前日期为：" + year + '年' + month + '月');
+        this.setState({tags : [8, 23]});
     },
     render() {
         return (
-            <Calendar onSelectDate={this.selectDate} year="2016" month="8" day="7" tags={[5, 21]} />
+            <Calendar
+                onSelectDate={this.selectDate}
+                onPreviousMonth={this.previousMonth}
+                onNextMonth={this.nextMonth}
+                year="2016"
+                month="8"
+                day="7"
+                tags={this.state.tags} />
         );
     }
 });

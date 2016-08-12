@@ -158,6 +158,8 @@ const Calendar = React.createClass({
             select_day : select_day,
             date_num_array : date_num_array,
             first_day : first_day
+        }, () => {
+            this.props.onPreviousMonth(select_year, select_month + 1);
         })
     },
 
@@ -191,6 +193,8 @@ const Calendar = React.createClass({
             select_day : select_day,
             date_num_array : date_num_array,
             first_day : first_day
+        }, () => {
+            this.props.onNextMonth(select_year, select_month + 1);
         })
     },
 
