@@ -256,7 +256,7 @@ const Calendar = React.createClass({
             if (tags.length > 0) {
                 for (let j = 0; j < tags.length; j++) {
                     if ((i + 1) === tags[j]) {
-                        currentClassName += 'item-tag';
+                        currentClassName += ' item-tag';
                         break;
                     }
                 }
