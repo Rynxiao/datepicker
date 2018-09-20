@@ -59,7 +59,7 @@ module.exports = {
   ],
   devServer: {
     port: 8080,
-    contentBase: path.resolve(projectPath, 'build'),
+    contentBase: path.resolve(projectPath, 'dist'),
     hot: true,
   },
 }

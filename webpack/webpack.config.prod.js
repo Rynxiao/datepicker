@@ -25,7 +25,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              publicPath: '../build/styles',
+              publicPath: '../dist/styles',
             },
           },
           {
@@ -46,7 +46,7 @@ module.exports = {
       chunkFilename: '[id].css',
     }),
     new HtmlWebpackPlugin({
-      title: 'CSS Modules Demo',
+      title: 'Datepicker',
       filename: 'index.html',
       template: path.resolve(projectPath, 'index.html'),
       inject: false,

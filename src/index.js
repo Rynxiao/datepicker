@@ -1,6 +1,6 @@
-const message = {
-  a: 1,
-  b: 2,
-}
 
-console.log(message)
+import React from 'react'
+
+const App = () => <div>App</div>
+
+export default App
