@@ -16,7 +16,6 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: path.resolve(projectPath, 'src'),
         exclude: /node_modules/,
       },
       {
@@ -37,6 +36,12 @@ module.exports = {
             },
           },
         ],
+      },
+      {
+        loader: 'file-loader',
+        options: {
+          outputPath: path.resolve(projectPath, 'dist/images'),
+        },
       },
     ],
   },

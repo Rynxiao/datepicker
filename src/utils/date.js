@@ -11,7 +11,7 @@ export const isLeapYear = year => (year % 4 === 0 && year % 100 !== 0) || (year 
  * 去掉字符串首尾空格
  * @param {String} str 字符串
  */
-export const trimStr = str => str.replace(/^\s*/).replace(/\s*$/)
+export const trimStr = str => str.replace(/^\s*/, '').replace(/\s*$/, '')
 
 /**
  * 获取当前年份
@@ -31,7 +31,7 @@ export const getCurrentDay = () => new Date().getDate()
 /**
  * 获取当前年份格式
  */
-export const getCurrentDate = () => `${getCurrentYear()}-${getCurrentMonth()}-${getCurrentDate()}`
+export const getCurrentDate = () => `${getCurrentYear()}-${getCurrentMonth()}-${getCurrentDay()}`
 
 /**
  * 格式化月份或者天数
@@ -50,29 +50,20 @@ const formatMonthOrDay = dateStr => {
  * @param {String} date 日期
  */
 export const formatDate = date => {
-  const currentDate = getCurrentDate()
-
-  if (!date) {
-    return currentDate
-  }
-
-  if (typeof date !== 'string') {
-    warnning('date should be string')
-    return currentDate
-  }
-
-  if (date.split('-').length > 0) {
-    return currentDate
-  }
-
   const regexp = /^(\d{4})(\s*[/\-\\:]?\s*)?(\d{1,2})(\s*[/\-\\:]?\s*)?(\d{1,2})/
   const strArr = trimStr(date).match(regexp)
   const year = strArr[1]
   let month = strArr[3]
   let day = strArr[5]
+
   if (+month > 12) {
-    warnning('cannot recognition the date string, please offer a separator, like: 2019-09-18')
-    return currentDate
+    warnning('month exceed max month number 12')
+    month = 12
+  }
+
+  if (+day > 31) {
+    warnning('day exceed max day number 31')
+    day = 31
   }
 
   month = formatMonthOrDay(month)
@@ -99,25 +90,25 @@ const specificDateAdapter = date => {
  * 获取指定日期的年份
  * @param {String} date 日期格式
  */
-export const getYearFromSpecificDate = date => specificDateAdapter(date)('year')
+export const getYearFromSpecificDate = (date = getCurrentDate()) => specificDateAdapter(date)('year')
 
 /**
  * 获取指定日期的月份
  * @param {String} date 日期格式
  */
-export const getMonthFromSpecificDate = date => specificDateAdapter(date)('month')
+export const getMonthFromSpecificDate = (date = getCurrentDate()) => specificDateAdapter(date)('month')
 
 /**
  * 获取指定日期的天数
  * @param {String} date 日期格式
  */
-export const getDayFromSepecificDate = date => specificDateAdapter(date)('day')
+export const getDayFromSepecificDate = (date = getCurrentDate()) => specificDateAdapter(date)('day')
 
 /**
  * 获取指定日期的年份格式
  * @param {String} date 日期格式
  */
-export const getDateFormatFromSepecificDate = date => specificDateAdapter(date)('format')
+export const getDateFormatFromSepecificDate = (date = getCurrentDate()) => specificDateAdapter(date)('format')
 
 /**
  * 获取指定月份的天数
@@ -125,7 +116,7 @@ export const getDateFormatFromSepecificDate = date => specificDateAdapter(date)(
  * @param {String} month 月份
  */
 export const getDaysCountOfMonth = (month = getCurrentMonth(),
-  year = getCurrentYear()) => new Date(year, month, 0)
+  year = getCurrentYear()) => new Date(year, month, 0).getDate()
 
 /**
  * 获取一月中的第一天是星期几

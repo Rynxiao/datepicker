@@ -6,6 +6,7 @@ const projectPath = path.resolve(__dirname, '../')
 
 module.exports = {
   mode: 'development',
+  devtool: 'eval-source-map',
   entry: path.resolve(projectPath, 'src/index.js'),
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -29,7 +30,6 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        // include: path.resolve(projectPath, './src/**/*.js'),
         exclude: /node_modules/,
       },
       {
@@ -45,6 +45,13 @@ module.exports = {
             },
           },
         ],
+      },
+      {
+        test: /\.(jpe?g|png|svg|bmp)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+        },
       },
     ],
   },
