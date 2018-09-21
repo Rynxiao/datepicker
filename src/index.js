@@ -1,6 +1,8 @@
 
 import React from 'react'
+import ReactDOM from 'react-dom'
 
-const App = () => <div>App</div>
+const App = () => <div>Hello React!</div>
 
-export default App
+/* eslint-disable no-undef */
+ReactDOM.render(<App />, document.getElementById('container'))

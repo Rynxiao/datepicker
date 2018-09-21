@@ -22,15 +22,15 @@ module.exports = {
         }],
         include: path.resolve(projectPath, './src/**/*.js'),
         exclude: [
-          path.resolve(projectPath, 'node_modules'),
+          /node_modules/,
           path.resolve(projectPath, './webpack/**/*.js'),
         ],
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: path.resolve(projectPath, './src/**/*.js'),
-        exclude: path.resolve(projectPath, 'node_modules'),
+        // include: path.resolve(projectPath, './src/**/*.js'),
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
