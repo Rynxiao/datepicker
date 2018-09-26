@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Styles from './picker.css'
 import { getDateFormatFromSepecificDate } from '../../utils'
-import Modal from './Modal'
+import Modal from '../modal/Modal'
+import { CHINESE_MODEL, WESTERN_MODEL } from '../../const'
 
 class DatePicker extends Component {
   constructor(props) {
@@ -11,12 +12,15 @@ class DatePicker extends Component {
     this.state = {
       value: defaultDate,
       showModal: false,
+      model: CHINESE_MODEL,
     }
 
     this.onModalOpen = this.onModalOpen.bind(this)
     this.onInputChange = this.onInputChange.bind(this)
     this.onInputClear = this.onInputClear.bind(this)
     this.onModalClose = this.onModalClose.bind(this)
+    this.onChangeModel = this.onChangeModel.bind(this)
+    this.onSelectDay = this.onSelectDay.bind(this)
   }
 
   onModalOpen() {
@@ -24,15 +28,27 @@ class DatePicker extends Component {
   }
 
   onModalClose() {
-    this.setState({ showModal: false })
+    // this.setState({ showModal: false })
   }
 
-  onInputChange() {
-    console.log('onInputChange')
+  onInputChange(event) {
+    this.setState({ value: event.target.value })
   }
 
   onInputClear() {
     this.setState({ value: '', showModal: false })
+  }
+
+  onChangeModel(model) {
+    if (model === CHINESE_MODEL) {
+      this.setState({ model: WESTERN_MODEL })
+    } else {
+      this.setState({ model: CHINESE_MODEL })
+    }
+  }
+
+  onSelectDay(day) {
+    this.setState({ value: day.full })
   }
 
   render() {
@@ -47,10 +63,10 @@ class DatePicker extends Component {
         >
           <input
             type="text"
-            placeholder="选择日期"
+            placeholder="请选择日期"
             className={Styles.input}
             value={value}
-            onChange={this.onInputChange}
+            onChange={e => this.onInputChange(e)}
             onFocus={this.onModalOpen}
             onBlur={this.onModalClose}
           />
@@ -62,7 +78,14 @@ class DatePicker extends Component {
           />
           <div className={Styles.line} />
         </div>
-        <Modal isMounted={showModal} delayTime={200} />
+        <Modal
+          isMounted={showModal}
+          delayTime={200}
+          onInputChange={this.onInputChange}
+          onChangeModel={this.onChangeModel}
+          onSelectDay={this.onSelectDay}
+          {...this.state}
+        />
       </div>
     )
   }

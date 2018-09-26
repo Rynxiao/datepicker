@@ -37,8 +37,8 @@ export const getCurrentDate = () => `${getCurrentYear()}-${getCurrentMonth()}-${
  * 格式化月份或者天数
  * @param {String} dateStr 月份或者天数
  */
-const formatMonthOrDay = dateStr => {
-  if (dateStr.length === 2) {
+export const formatMonthOrDay = dateStr => {
+  if ((`${dateStr}`).length === 2) {
     return dateStr
   }
 
@@ -123,8 +123,9 @@ export const getDaysCountOfMonth = (month = getCurrentMonth(),
  * @param {String} month 月份
  * @param {String} year 年份
  */
-export const getWeekOfMonth = (month = getCurrentMonth(),
-  year = getCurrentYear()) => new Date(year, month).getDay()
+export const getWeekOfMonth = (month = getCurrentMonth(), year = getCurrentYear()) => (
+  new Date(`${year}, ${month}, 01`).getDay()
+)
 
 /**
  * 获取一月中的第一天是星期几
@@ -134,4 +135,18 @@ export const getWeekOfMonth = (month = getCurrentMonth(),
 export const getWeekNameOfMonth = (month = getCurrentMonth(), year = getCurrentYear()) => {
   const dayNumber = getWeekOfMonth(month, year)
   return weekMap.get(dayNumber)
+}
+
+/**
+ * 是否为当前天
+ * @param {Sring/Number} year 年份
+ * @param {Sring/Number} month 月份
+ * @param {Sring/Number} day 天
+ */
+export const isCurrentDay = (year, month, day) => {
+  const currentYear = getCurrentYear()
+  const currentMonth = getCurrentMonth()
+  const currentDay = getCurrentDay()
+  /* eslint-disable eqeqeq */
+  return (currentYear == year) && (currentMonth == month) && (currentDay == day)
 }

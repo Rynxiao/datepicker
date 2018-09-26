@@ -50,12 +50,12 @@
 
 .container {
   width: 280px;
-  height: 200px;
   position: absolute;
   top: 0;
   left: 0;
-  background-color: aqua;
+  background-color: white;
   z-index: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 .in {
   animation: slideDownIn 0.2s;

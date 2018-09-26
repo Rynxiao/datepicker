@@ -1,0 +1,28 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 50px auto 50px;
+  grid-auto-rows: 38px;
+}
+.lang {
+  text-align: center;
+}
+.lang > span {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  background-color: #1890ff;
+  border-radius: 2px;
+  font-size: 12px;
+  line-height: 22px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+.today {
+  line-height: 38px;
+  text-align: center;
+}
+.today > span {
+  color: #1890ff;
+  cursor: pointer;
+}
