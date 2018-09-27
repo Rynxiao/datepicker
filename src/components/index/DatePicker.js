@@ -3,7 +3,9 @@ import PropTypes from 'prop-types'
 import Styles from './picker.css'
 import { getDateFormatFromSepecificDate } from '../../utils'
 import Modal from '../modal/Modal'
-import { CHINESE_MODEL, WESTERN_MODEL } from '../../const'
+import { CHINESE_MODEL, WESTERN_MODEL, _ } from '../../const'
+import { DateContext, initialData } from '../../context'
+import { setSelectedDays, getDaysOfMonth, getWeekSort } from '../../helper'
 
 class DatePicker extends Component {
   constructor(props) {
@@ -12,7 +14,7 @@ class DatePicker extends Component {
     this.state = {
       value: defaultDate,
       showModal: false,
-      model: CHINESE_MODEL,
+      ...initialData,
     }
 
     this.onModalOpen = this.onModalOpen.bind(this)
@@ -28,7 +30,7 @@ class DatePicker extends Component {
   }
 
   onModalClose() {
-    // this.setState({ showModal: false })
+    this.setState({ showModal: false })
   }
 
   onInputChange(event) {
@@ -40,15 +42,30 @@ class DatePicker extends Component {
   }
 
   onChangeModel(model) {
+    const { value } = this.state
+    let nextModel = model
     if (model === CHINESE_MODEL) {
-      this.setState({ model: WESTERN_MODEL })
+      nextModel = WESTERN_MODEL
     } else {
-      this.setState({ model: CHINESE_MODEL })
+      nextModel = CHINESE_MODEL
     }
+
+    const weekTags = getWeekSort(nextModel)
+    const changeModelDays = getDaysOfMonth(_, _, nextModel)
+    const afterSetDays = setSelectedDays(changeModelDays, value)
+    this.setState({
+      model: nextModel,
+      weekTags: weekTags,
+      days: afterSetDays,
+    })
   }
 
   onSelectDay(day) {
-    this.setState({ value: day.full })
+    const { days } = this.state
+    const afterSetDays = setSelectedDays(days, day.full)
+    this.setState({ value: day.full, days: afterSetDays }, () => {
+      // this.onModalClose()
+    })
   }
 
   render() {
@@ -68,7 +85,6 @@ class DatePicker extends Component {
             value={value}
             onChange={e => this.onInputChange(e)}
             onFocus={this.onModalOpen}
-            onBlur={this.onModalClose}
           />
           <i className={Styles.calendar} />
           <i
@@ -78,14 +94,23 @@ class DatePicker extends Component {
           />
           <div className={Styles.line} />
         </div>
-        <Modal
-          isMounted={showModal}
-          delayTime={200}
-          onInputChange={this.onInputChange}
-          onChangeModel={this.onChangeModel}
-          onSelectDay={this.onSelectDay}
-          {...this.state}
-        />
+        <DateContext.Provider
+          value={
+            {
+              ...this.state,
+              onSelectDay: this.onSelectDay,
+              onChangeModel: this.onChangeModel,
+            }
+          }
+        >
+          <Modal
+            isMounted={showModal}
+            delayTime={200}
+            onInputChange={this.onInputChange}
+            onCloseModal={this.onModalClose}
+            {...this.state}
+          />
+        </DateContext.Provider>
       </div>
     )
   }

@@ -11,11 +11,8 @@ import Footer from '../footer/Footer'
 const Modal = ({
   isMounted,
   value,
-  // showModal,
   onInputChange,
-  onChangeModel,
-  onSelectDay,
-  model,
+  onCloseModal,
 }) => (
   <React.Fragment>
     <div className={classNames(Styles.container, {
@@ -30,12 +27,11 @@ const Modal = ({
       <div className="calendar">
         <Header />
         <Body
-          model={model}
           value={value}
-          onSelectDay={onSelectDay}
+          onCloseModal={onCloseModal}
         />
       </div>
-      <Footer model={model} onChangeModel={onChangeModel} />
+      <Footer />
     </div>
   </React.Fragment>
 )
@@ -47,11 +43,8 @@ Modal.defaultProps = {
 Modal.propTypes = {
   isMounted: PropTypes.bool,
   value: PropTypes.string.isRequired,
-  // showModal: PropTypes.bool.isRequired,
   onInputChange: PropTypes.func.isRequired,
-  model: PropTypes.string.isRequired,
-  onChangeModel: PropTypes.func.isRequired,
-  onSelectDay: PropTypes.func.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
 }
 
 export default delayUnmounting(Modal)

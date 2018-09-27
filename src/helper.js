@@ -8,6 +8,7 @@ import {
   getDaysCountOfMonth,
   formatMonthOrDay,
   isCurrentDay,
+  formatDate,
 } from './utils'
 
 export const getWeekSort = (model = CHINESE_MODEL) => {
@@ -105,3 +106,12 @@ export const selectDayByIndex = (days, index) => days.map((day, idx) => {
   tempDay.selected = index === idx
   return tempDay
 })
+
+export const setSelectedDays = (days, selectedDay) => {
+  const fDate = formatDate(selectedDay)
+  return days.map(day => {
+    const tempDay = day
+    tempDay.selected = day.full === fDate.format
+    return tempDay
+  })
+}
