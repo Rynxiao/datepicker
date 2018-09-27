@@ -63,3 +63,6 @@
 .out {
   animation: slideDownOut 0.2s;
 }
+.panel {
+  position: relative;
+}

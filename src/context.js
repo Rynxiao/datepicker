@@ -1,5 +1,5 @@
 import React from 'react'
-import { CHINESE_MODEL, _ } from './const'
+import { CHINESE_MODEL, _, noop } from './const'
 import { getDaysOfMonth, getWeekSort } from './helper'
 
 const model = CHINESE_MODEL
@@ -10,8 +10,12 @@ export const initialData = {
   model: model,
   days: days,
   weekTags: weekTags,
-  onChangeModel: () => {},
-  onSelectDay: () => {},
+  onChangeModel: noop,
+  onSelectDay: noop,
+  onPrevMonth: noop,
+  onPrevYear: noop,
+  onNextMonth: noop,
+  onNextYear: noop,
 }
 
 export const DateContext = React.createContext(initialData)

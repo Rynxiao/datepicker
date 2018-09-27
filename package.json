@@ -15,8 +15,7 @@
     "classnames": "^2.2.6",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "uuid": "^3.3.2"
+    "react-dom": "^16.5.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -24,7 +23,7 @@
     "babel-loader": "7.1.5",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "css-loader": "^1.0.0",
     "eslint": "^5.6.0",
     "eslint-config-airbnb": "^17.1.0",

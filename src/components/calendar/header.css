@@ -5,8 +5,11 @@
   grid-auto-rows: 34px;
   border-bottom: 1px solid #e8e8e8;
 }
-.wrapper > i {
+.wrapper i {
   cursor: pointer;
+}
+.wrapper i:hover {
+  color: #40a9ff;
 }
 .prev-year {
   margin-left: 7px;
@@ -63,9 +66,13 @@
   line-height: 34px;
   text-align: center;
 }
+
 .link {
   display: inline-block;
   cursor: pointer;
   margin: 0 3px;
   letter-spacing: 1px;
+}
+.link:hover {
+  color: #40a9ff;
 }

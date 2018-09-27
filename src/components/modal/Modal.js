@@ -12,7 +12,6 @@ const Modal = ({
   isMounted,
   value,
   onInputChange,
-  onCloseModal,
 }) => (
   <React.Fragment>
     <div className={classNames(Styles.container, {
@@ -24,14 +23,13 @@ const Modal = ({
         value={value}
         onInputChange={onInputChange}
       />
-      <div className="calendar">
-        <Header />
-        <Body
-          value={value}
-          onCloseModal={onCloseModal}
-        />
+      <div className={Styles.panel}>
+        <div className={Styles.header}>
+          <Header />
+        </div>
+        <Body />
+        <Footer />
       </div>
-      <Footer />
     </div>
   </React.Fragment>
 )
@@ -44,7 +42,6 @@ Modal.propTypes = {
   isMounted: PropTypes.bool,
   value: PropTypes.string.isRequired,
   onInputChange: PropTypes.func.isRequired,
-  onCloseModal: PropTypes.func.isRequired,
 }
 
 export default delayUnmounting(Modal)

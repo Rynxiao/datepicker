@@ -9,6 +9,7 @@ import {
   formatMonthOrDay,
   isCurrentDay,
   formatDate,
+  getCurrentDate,
 } from './utils'
 
 export const getWeekSort = (model = CHINESE_MODEL) => {
@@ -47,16 +48,35 @@ const getFullDays = (year, month, day, tag = CURRENT_DAY) => {
   }
 }
 
-const getPrevMonthLeftDays = (year, month, firstDay, model) => {
+export const getPrevYearAndMonth = (year, month) => {
   let prevYear = year
   let prevMonth = month
-  const leftCount = getPrevLeftDays(firstDay, model)
   if (+month === 1) {
     prevYear -= 1
     prevMonth = 12
+  } else {
+    prevMonth -= 1
   }
+  return { year: prevYear, month: prevMonth }
+}
 
-  prevMonth -= 1
+export const getNextYearAndMonth = (year, month) => {
+  let nextYear = year
+  let nextMonth = month
+  if (+month === 12) {
+    nextYear += 1
+    nextMonth = 1
+  } else {
+    nextMonth += 1
+  }
+  return { year: nextYear, month: nextMonth }
+}
+
+const getPrevMonthLeftDays = (year, month, firstDay, model) => {
+  const yearAndMonth = getPrevYearAndMonth(year, month)
+  const prevYear = yearAndMonth.year
+  const prevMonth = yearAndMonth.month
+  const leftCount = getPrevLeftDays(firstDay, model)
 
   const prevDays = []
   const prevMonthDays = getDaysCountOfMonth(prevMonth, prevYear)
@@ -69,15 +89,11 @@ const getPrevMonthLeftDays = (year, month, firstDay, model) => {
 }
 
 const getNextMonthLeftDays = (year, month, days, firstDay, model) => {
-  let nextYear = year
-  let nextMonth = month
+  const yearAndMonth = getNextYearAndMonth(year, month)
+  const nextYear = yearAndMonth.year
+  const nextMonth = yearAndMonth.month
   const leftCount = getPrevLeftDays(firstDay, model)
-  if (+month === 12) {
-    nextYear += 1
-    nextMonth = 1
-  }
 
-  nextMonth += 1
   const nextDays = []
   const nextLefts = 6 * 7 - (leftCount + days)
   for (let i = 0; i < nextLefts; i++) {
@@ -114,4 +130,14 @@ export const setSelectedDays = (days, selectedDay) => {
     tempDay.selected = day.full === fDate.format
     return tempDay
   })
+}
+
+export const getDaysAfterchangedYearOrMonth = (year = getCurrentYear(),
+  month = getCurrentMonth(), model = CHINESE_MODEL) => (
+  getDaysOfMonth(year, month, model)
+)
+
+export const isInCurrentMonth = date => {
+  const currentDate = getCurrentDate()
+  return date.substr(0, 7) === currentDate.substr(0, 7)
 }

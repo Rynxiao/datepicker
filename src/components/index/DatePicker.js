@@ -1,47 +1,50 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Styles from './picker.css'
-import { getDateFormatFromSepecificDate } from '../../utils'
+import { getDateFormatFromSepecificDate, getCurrentYear, getCurrentMonth } from '../../utils'
 import Modal from '../modal/Modal'
 import { CHINESE_MODEL, WESTERN_MODEL, _ } from '../../const'
 import { DateContext, initialData } from '../../context'
-import { setSelectedDays, getDaysOfMonth, getWeekSort } from '../../helper'
+import {
+  setSelectedDays,
+  getDaysOfMonth,
+  getWeekSort,
+  getDaysAfterchangedYearOrMonth,
+  getPrevYearAndMonth,
+  getNextYearAndMonth,
+  isInCurrentMonth,
+} from '../../helper'
 
 class DatePicker extends Component {
   constructor(props) {
     super(props)
-    const { defaultDate } = this.props
+    const { defaultDate, year, month } = this.props
     this.state = {
+      year: year,
+      month: month,
       value: defaultDate,
       showModal: false,
       ...initialData,
     }
-
-    this.onModalOpen = this.onModalOpen.bind(this)
-    this.onInputChange = this.onInputChange.bind(this)
-    this.onInputClear = this.onInputClear.bind(this)
-    this.onModalClose = this.onModalClose.bind(this)
-    this.onChangeModel = this.onChangeModel.bind(this)
-    this.onSelectDay = this.onSelectDay.bind(this)
   }
 
-  onModalOpen() {
+  onModalOpen = () => {
     this.setState({ showModal: true })
   }
 
-  onModalClose() {
+  onModalClose = () => {
     this.setState({ showModal: false })
   }
 
-  onInputChange(event) {
+  onInputChange = event => {
     this.setState({ value: event.target.value })
   }
 
-  onInputClear() {
+  onInputClear = () => {
     this.setState({ value: '', showModal: false })
   }
 
-  onChangeModel(model) {
+  onChangeModel = model => {
     const { value } = this.state
     let nextModel = model
     if (model === CHINESE_MODEL) {
@@ -60,12 +63,57 @@ class DatePicker extends Component {
     })
   }
 
-  onSelectDay(day) {
+  onSelectDay = day => {
     const { days } = this.state
-    const afterSetDays = setSelectedDays(days, day.full)
+    let renderDays = days
+    if (!isInCurrentMonth(day.full)) {
+      // 不是在【今天】这个月份，需要重新换数据源
+      renderDays = initialData.days
+    }
+
+    const afterSetDays = setSelectedDays(renderDays, day.full)
     this.setState({ value: day.full, days: afterSetDays }, () => {
-      // this.onModalClose()
+      this.onModalClose()
     })
+  }
+
+  _onChangeYearOrMonth = (changeYear, changeMonth) => {
+    const {
+      model,
+      value,
+      year,
+      month,
+    } = this.state
+    const days = getDaysAfterchangedYearOrMonth(changeYear, changeMonth, model)
+    const afterSetDays = setSelectedDays(days, value)
+    this.setState({
+      days: afterSetDays,
+      year: changeYear === _ ? year : changeYear,
+      month: changeMonth === _ ? month : changeMonth,
+    })
+  }
+
+  onPrevMonth = () => {
+    const { year, month } = this.state
+    const yearAndMonth = getPrevYearAndMonth(year, month)
+    /* eslint-disable no-underscore-dangle */
+    this._onChangeYearOrMonth(yearAndMonth.year, yearAndMonth.month)
+  }
+
+  onPrevYear = () => {
+    const { year } = this.state
+    this._onChangeYearOrMonth(year - 1, _)
+  }
+
+  onNextMonth = () => {
+    const { year, month } = this.state
+    const yearAndMonth = getNextYearAndMonth(year, month)
+    this._onChangeYearOrMonth(yearAndMonth.year, yearAndMonth.month)
+  }
+
+  onNextYear = () => {
+    const { year } = this.state
+    this._onChangeYearOrMonth(year + 1, _)
   }
 
   render() {
@@ -100,6 +148,10 @@ class DatePicker extends Component {
               ...this.state,
               onSelectDay: this.onSelectDay,
               onChangeModel: this.onChangeModel,
+              onPrevMonth: this.onPrevMonth,
+              onPrevYear: this.onPrevYear,
+              onNextMonth: this.onNextMonth,
+              onNextYear: this.onNextYear,
             }
           }
         >
@@ -119,11 +171,15 @@ class DatePicker extends Component {
 DatePicker.defaultProps = {
   inline: false,
   defaultDate: getDateFormatFromSepecificDate(),
+  year: getCurrentYear(),
+  month: getCurrentMonth(),
 }
 
 DatePicker.propTypes = {
   inline: PropTypes.bool,
   defaultDate: PropTypes.string,
+  year: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  month: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 }
 
 export default DatePicker
