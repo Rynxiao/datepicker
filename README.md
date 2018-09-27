@@ -26,7 +26,7 @@ $ yarn -v
 
 ### react版本
 
-``shell
+```shell
 react v16.5.2
 ```
 
