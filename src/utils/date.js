@@ -150,3 +150,33 @@ export const isCurrentDay = (year, month, day) => {
   /* eslint-disable eqeqeq */
   return (currentYear == year) && (currentMonth == month) && (currentDay == day)
 }
+
+/**
+ * 判断日期是否合法
+ * @param {String} date 日期
+ */
+export const isDateValid = date => {
+  const regexp = /^(\d{4})(\s*[/\-\\:]?\s*)?(\d{1,2})(\s*[/\-\\:]?\s*)?(\d{1,2})$/
+  const strArr = trimStr(date).match(regexp)
+  const result = regexp.test(trimStr(date))
+
+  console.log(strArr)
+  console.log(result)
+
+  if (!strArr) {
+    return false
+  }
+
+  const month = strArr[3]
+  const day = strArr[5]
+
+  if (+month > 12) {
+    return false
+  }
+
+  if (+day > 31) {
+    return false
+  }
+
+  return true
+}

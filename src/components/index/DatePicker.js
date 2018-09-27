@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Styles from './picker.css'
-import { getDateFormatFromSepecificDate, getCurrentYear, getCurrentMonth } from '../../utils'
+import {
+  getDateFormatFromSepecificDate,
+  getCurrentYear, getCurrentMonth,
+  isDateValid,
+  // getCurrentDate,
+} from '../../utils'
 import Modal from '../modal/Modal'
 import { CHINESE_MODEL, WESTERN_MODEL, _ } from '../../const'
 import { DateContext, initialData } from '../../context'
@@ -37,7 +42,16 @@ class DatePicker extends Component {
   }
 
   onInputChange = event => {
-    this.setState({ value: event.target.value })
+    const val = event.target.value
+    // console.log(val)
+    this.setState({ value: val }, () => {
+      // console.log(isDateValid(val))
+      if (isDateValid(val)) {
+        // this.onSelectDay(val)
+      } else {
+        // this.onSelectToday(getCurrentDate())
+      }
+    })
   }
 
   onInputClear = () => {
@@ -65,14 +79,22 @@ class DatePicker extends Component {
 
   onSelectDay = day => {
     const { days } = this.state
+    const afterSetDays = setSelectedDays(days, day.full)
+    this.setState({ value: day.full, days: afterSetDays }, () => {
+      this.onModalClose()
+    })
+  }
+
+  onSelectToday = today => {
+    const { days } = this.state
     let renderDays = days
-    if (!isInCurrentMonth(day.full)) {
+    if (!isInCurrentMonth(today)) {
       // 不是在【今天】这个月份，需要重新换数据源
       renderDays = initialData.days
     }
 
-    const afterSetDays = setSelectedDays(renderDays, day.full)
-    this.setState({ value: day.full, days: afterSetDays }, () => {
+    const afterSetDays = setSelectedDays(renderDays, today)
+    this.setState({ value: today, days: afterSetDays }, () => {
       this.onModalClose()
     })
   }
@@ -147,6 +169,7 @@ class DatePicker extends Component {
             {
               ...this.state,
               onSelectDay: this.onSelectDay,
+              onSelectToday: this.onSelectToday,
               onChangeModel: this.onChangeModel,
               onPrevMonth: this.onPrevMonth,
               onPrevYear: this.onPrevYear,

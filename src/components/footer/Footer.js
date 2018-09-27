@@ -7,15 +7,13 @@ import { getDateFormatFromSepecificDate } from '../../utils'
 const Footer = () => (
   <DateContext.Consumer>
     {
-      ({ model, onChangeModel, onSelectDay }) => (
+      ({ model, onChangeModel, onSelectToday }) => (
         <div className={Styles.wrapper}>
           <div />
           <div
             role="presentation"
             className={Styles.today}
-            onClick={() => onSelectDay({
-              full: getDateFormatFromSepecificDate(),
-            })}
+            onClick={() => onSelectToday(getDateFormatFromSepecificDate())}
           >
             <span>今天</span>
           </div>

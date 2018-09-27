@@ -12,6 +12,7 @@ export const initialData = {
   weekTags: weekTags,
   onChangeModel: noop,
   onSelectDay: noop,
+  onSelectToday: noop,
   onPrevMonth: noop,
   onPrevYear: noop,
   onNextMonth: noop,
