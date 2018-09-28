@@ -31,7 +31,7 @@ const Index = () => (
                 })}
                 title={day.full}
                 key={day.full}
-                onClick={() => onSelectDay(day)}
+                onClick={e => onSelectDay(day, e)}
                 role="presentation"
               >
                 { day.day }

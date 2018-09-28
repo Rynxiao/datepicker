@@ -61,8 +61,8 @@ export const getPrevYearAndMonth = (year, month) => {
 }
 
 export const getNextYearAndMonth = (year, month) => {
-  let nextYear = year
-  let nextMonth = month
+  let nextYear = +year
+  let nextMonth = +month
   if (+month === 12) {
     nextYear += 1
     nextMonth = 1
@@ -137,7 +137,6 @@ export const getDaysAfterchangedYearOrMonth = (year = getCurrentYear(),
   getDaysOfMonth(year, month, model)
 )
 
-export const isInCurrentMonth = date => {
-  const currentDate = getCurrentDate()
-  return date.substr(0, 7) === currentDate.substr(0, 7)
-}
+export const isInCurrentMonth = (date, current = getCurrentDate()) => (
+  date.substring(0, 7) === current.substring(0, 7)
+)

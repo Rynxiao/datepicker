@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import Styles from './picker.css'
 import {
   getDateFormatFromSepecificDate,
-  getCurrentYear, getCurrentMonth,
+  getCurrentYear,
+  getCurrentMonth,
   isDateValid,
-  // getCurrentDate,
 } from '../../utils'
 import Modal from '../modal/Modal'
-import { CHINESE_MODEL, WESTERN_MODEL, _ } from '../../const'
+import {
+  CHINESE_MODEL, WESTERN_MODEL, _, noop,
+} from '../../const'
 import { DateContext, initialData } from '../../context'
 import {
   setSelectedDays,
@@ -19,6 +21,7 @@ import {
   getNextYearAndMonth,
   isInCurrentMonth,
 } from '../../helper'
+import '../../utils/closest-polyfill'
 
 class DatePicker extends Component {
   constructor(props) {
@@ -33,6 +36,21 @@ class DatePicker extends Component {
     }
   }
 
+  componentDidMount() {
+    document.addEventListener('click', event => {
+      if (event.target.closest('.picker-wrapper')) {
+        return
+      }
+
+      const { value } = this.state
+      if (!isDateValid(value)) {
+        this.onSelectToday(getDateFormatFromSepecificDate())
+      } else {
+        this.onModalClose()
+      }
+    })
+  }
+
   onModalOpen = () => {
     this.setState({ showModal: true })
   }
@@ -43,13 +61,11 @@ class DatePicker extends Component {
 
   onInputChange = event => {
     const val = event.target.value
-    // console.log(val)
     this.setState({ value: val }, () => {
-      // console.log(isDateValid(val))
-      if (isDateValid(val)) {
-        // this.onSelectDay(val)
-      } else {
-        // this.onSelectToday(getCurrentDate())
+      if (!val || isDateValid(val)) {
+        const { days } = this.state
+        const afterSetDays = setSelectedDays(days, val)
+        this.setState({ days: afterSetDays })
       }
     })
   }
@@ -77,12 +93,39 @@ class DatePicker extends Component {
     })
   }
 
-  onSelectDay = day => {
-    const { days } = this.state
-    const afterSetDays = setSelectedDays(days, day.full)
-    this.setState({ value: day.full, days: afterSetDays }, () => {
-      this.onModalClose()
+  _onChangeYearOrMonth = (
+    changeYear,
+    changeMonth,
+    callback = noop,
+    format,
+  ) => {
+    const {
+      model, value, year, month,
+    } = this.state
+    const dayFormat = format || value
+    const days = getDaysAfterchangedYearOrMonth(changeYear, changeMonth, model)
+    const afterSetDays = setSelectedDays(days, dayFormat)
+    this.setState({
+      days: afterSetDays,
+      year: changeYear === _ ? year : changeYear,
+      month: changeMonth === _ ? month : changeMonth,
+      value: dayFormat,
+    }, () => {
+      callback()
     })
+  }
+
+  onSelectDay = day => {
+    const { days, value } = this.state
+    if (!isInCurrentMonth(day.full, value)) {
+      const year = day.full.substring(0, 4)
+      const month = day.full.substring(5, 7)
+      /* eslint-disable no-underscore-dangle */
+      this._onChangeYearOrMonth(year, month, () => this.onModalClose(), day.full)
+    } else {
+      const afterSetDays = setSelectedDays(days, day.full)
+      this.setState({ value: day.full, days: afterSetDays }, () => this.onModalClose())
+    }
   }
 
   onSelectToday = today => {
@@ -94,31 +137,12 @@ class DatePicker extends Component {
     }
 
     const afterSetDays = setSelectedDays(renderDays, today)
-    this.setState({ value: today, days: afterSetDays }, () => {
-      this.onModalClose()
-    })
-  }
-
-  _onChangeYearOrMonth = (changeYear, changeMonth) => {
-    const {
-      model,
-      value,
-      year,
-      month,
-    } = this.state
-    const days = getDaysAfterchangedYearOrMonth(changeYear, changeMonth, model)
-    const afterSetDays = setSelectedDays(days, value)
-    this.setState({
-      days: afterSetDays,
-      year: changeYear === _ ? year : changeYear,
-      month: changeMonth === _ ? month : changeMonth,
-    })
+    this.setState({ value: today, days: afterSetDays }, () => this.onModalClose())
   }
 
   onPrevMonth = () => {
     const { year, month } = this.state
     const yearAndMonth = getPrevYearAndMonth(year, month)
-    /* eslint-disable no-underscore-dangle */
     this._onChangeYearOrMonth(yearAndMonth.year, yearAndMonth.month)
   }
 
@@ -143,7 +167,7 @@ class DatePicker extends Component {
     const { value, showModal } = this.state
 
     return (
-      <div className={Styles.wrapper}>
+      <div className={`picker-wrapper ${Styles.wrapper}`}>
         <div
           className={Styles.container}
           style={inline ? { display: 'inline-block' } : {}}
@@ -154,7 +178,7 @@ class DatePicker extends Component {
             className={Styles.input}
             value={value}
             onChange={e => this.onInputChange(e)}
-            onFocus={this.onModalOpen}
+            onFocus={e => this.onModalOpen(e)}
           />
           <i className={Styles.calendar} />
           <i
@@ -175,15 +199,13 @@ class DatePicker extends Component {
               onPrevYear: this.onPrevYear,
               onNextMonth: this.onNextMonth,
               onNextYear: this.onNextYear,
+              onInputChange: this.onInputChange,
             }
           }
         >
           <Modal
             isMounted={showModal}
             delayTime={200}
-            onInputChange={this.onInputChange}
-            onCloseModal={this.onModalClose}
-            {...this.state}
           />
         </DateContext.Provider>
       </div>

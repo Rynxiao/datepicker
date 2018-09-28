@@ -10,8 +10,6 @@ import Footer from '../footer/Footer'
 
 const Modal = ({
   isMounted,
-  value,
-  onInputChange,
 }) => (
   <React.Fragment>
     <div className={classNames(Styles.container, {
@@ -19,10 +17,7 @@ const Modal = ({
       [Styles.out]: !isMounted,
     })}
     >
-      <Input
-        value={value}
-        onInputChange={onInputChange}
-      />
+      <Input />
       <div className={Styles.panel}>
         <div className={Styles.header}>
           <Header />
@@ -40,8 +35,6 @@ Modal.defaultProps = {
 
 Modal.propTypes = {
   isMounted: PropTypes.bool,
-  value: PropTypes.string.isRequired,
-  onInputChange: PropTypes.func.isRequired,
 }
 
 export default delayUnmounting(Modal)

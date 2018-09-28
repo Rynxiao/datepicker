@@ -13,11 +13,11 @@ const Footer = () => (
           <div
             role="presentation"
             className={Styles.today}
-            onClick={() => onSelectToday(getDateFormatFromSepecificDate())}
+            onClick={e => onSelectToday(getDateFormatFromSepecificDate(), e)}
           >
             <span>今天</span>
           </div>
-          <div role="presentation" className={Styles.lang} onClick={() => onChangeModel(model)}>
+          <div role="presentation" className={Styles.lang} onClick={e => onChangeModel(model, e)}>
             <span>{ model === CHINESE_MODEL ? '中' : '西' }</span>
           </div>
         </div>

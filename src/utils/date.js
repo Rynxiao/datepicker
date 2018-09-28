@@ -50,11 +50,16 @@ export const formatMonthOrDay = dateStr => {
  * @param {String} date 日期
  */
 export const formatDate = date => {
-  const regexp = /^(\d{4})(\s*[/\-\\:]?\s*)?(\d{1,2})(\s*[/\-\\:]?\s*)?(\d{1,2})/
+  const regexp = /(^(\d{4})(\s*[/\-\\:]\s*)(\d{1,2})(\s*[/\-\\:]\s*)(\d{1,2})$)|(^(\d{4})(\d{1,2})(\d{1,2})$)/
   const strArr = trimStr(date).match(regexp)
-  const year = strArr[1]
-  let month = strArr[3]
-  let day = strArr[5]
+
+  if (!strArr) {
+    return { format: '' }
+  }
+
+  const year = strArr[2] || strArr[8]
+  let month = strArr[4] || strArr[9]
+  let day = strArr[6] || strArr[10]
 
   if (+month > 12) {
     warnning('month exceed max month number 12')
@@ -156,25 +161,23 @@ export const isCurrentDay = (year, month, day) => {
  * @param {String} date 日期
  */
 export const isDateValid = date => {
-  const regexp = /^(\d{4})(\s*[/\-\\:]?\s*)?(\d{1,2})(\s*[/\-\\:]?\s*)?(\d{1,2})$/
+  const regexp = /(^(\d{4})(\s*[/\-\\:]\s*)(\d{1,2})(\s*[/\-\\:]\s*)(\d{1,2})$)|(^(\d{4})(\d{1,2})(\d{1,2})$)/
   const strArr = trimStr(date).match(regexp)
-  const result = regexp.test(trimStr(date))
-
-  console.log(strArr)
-  console.log(result)
 
   if (!strArr) {
     return false
   }
 
-  const month = strArr[3]
-  const day = strArr[5]
+  const year = strArr[2] || strArr[8]
+  const month = strArr[4] || strArr[9]
+  const day = strArr[6] || strArr[10]
 
   if (+month > 12) {
     return false
   }
 
-  if (+day > 31) {
+  const countOfMonth = getDaysCountOfMonth(month, year)
+  if (+day > countOfMonth) {
     return false
   }
 
