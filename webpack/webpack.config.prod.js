@@ -24,7 +24,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              publicPath: '../dist/styles',
+              publicPath: './',
             },
           },
           {
@@ -35,20 +35,23 @@ module.exports = {
               localIdentName: '[name]__[local]--[hash:base64:5]',
             },
           },
+          'postcss-loader',
         ],
       },
       {
+        test: /\.(jpe?g|png|svg|bmp)$/,
         loader: 'file-loader',
         options: {
-          outputPath: path.resolve(projectPath, 'dist/images'),
+          outputPath: 'images/',
+          name: '[name]-[hash:base64:5].[ext]',
         },
       },
     ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css',
+      filename: '[name].[hash].css',
+      chunkFilename: '[id].[hash:base64:5].css',
     }),
     new HtmlWebpackPlugin({
       title: 'Datepicker',
