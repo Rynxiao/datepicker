@@ -6,7 +6,7 @@ const projectPath = path.resolve(__dirname, '../')
 
 module.exports = {
   mode: 'production',
-  entry: './src/index.js',
+  entry: './src/app.js',
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: '[name]-bundle-[hash:8].js',
@@ -51,7 +51,7 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
-      chunkFilename: '[id].[hash:base64:5].css',
+      chunkFilename: '[id].[hash].css',
     }),
     new HtmlWebpackPlugin({
       title: 'Datepicker',

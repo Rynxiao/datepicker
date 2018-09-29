@@ -14,26 +14,6 @@ export const isLeapYear = year => (year % 4 === 0 && year % 100 !== 0) || (year 
 export const trimStr = str => str.replace(/^\s*/, '').replace(/\s*$/, '')
 
 /**
- * 获取当前年份
- */
-export const getCurrentYear = () => new Date().getFullYear()
-
-/**
- * 获取当前月份
- */
-export const getCurrentMonth = () => new Date().getMonth() + 1
-
-/**
- * 获取当前天数
- */
-export const getCurrentDay = () => new Date().getDate()
-
-/**
- * 获取当前年份格式
- */
-export const getCurrentDate = () => `${getCurrentYear()}-${getCurrentMonth()}-${getCurrentDay()}`
-
-/**
  * 格式化月份或者天数
  * @param {String} dateStr 月份或者天数
  */
@@ -44,6 +24,26 @@ export const formatMonthOrDay = dateStr => {
 
   return `0${dateStr}`
 }
+
+/**
+ * 获取当前年份
+ */
+export const getCurrentYear = () => new Date().getFullYear()
+
+/**
+ * 获取当前月份
+ */
+export const getCurrentMonth = () => formatMonthOrDay(new Date().getMonth() + 1)
+
+/**
+ * 获取当前天数
+ */
+export const getCurrentDay = () => formatMonthOrDay(new Date().getDate())
+
+/**
+ * 获取当前年份格式
+ */
+export const getCurrentDate = () => `${getCurrentYear()}-${getCurrentMonth()}-${getCurrentDay()}`
 
 /**
  * 格式化日期

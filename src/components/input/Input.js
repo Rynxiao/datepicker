@@ -16,13 +16,13 @@ class Input extends React.Component {
     return (
       <DateContext.Consumer>
         {
-          ({ value, onInputChange }) => (
+          ({ value, placeholder, onInputChange }) => (
             <div className={Styles.wrapper}>
               <input
                 ref={this.textInput}
                 className={Styles.input}
                 type="text"
-                placeholder="请选择日期"
+                placeholder={placeholder}
                 value={value}
                 onChange={e => onInputChange(e)}
               />

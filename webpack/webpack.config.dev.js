@@ -7,7 +7,7 @@ const projectPath = path.resolve(__dirname, '../')
 module.exports = {
   mode: 'development',
   devtool: 'eval-source-map',
-  entry: path.resolve(projectPath, 'src/index.js'),
+  entry: path.resolve(projectPath, 'src/app.js'),
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',

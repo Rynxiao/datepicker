@@ -9,7 +9,7 @@ import {
 } from '../../utils'
 import Modal from '../modal/Modal'
 import {
-  CHINESE_MODEL, WESTERN_MODEL, _, noop,
+  CHINESE_MODEL, WESTERN_MODEL, _, INPUT_DEFAULT_PLACEHOLDER,
 } from '../../const'
 import { DateContext, initialData } from '../../context'
 import {
@@ -20,6 +20,7 @@ import {
   getPrevYearAndMonth,
   getNextYearAndMonth,
   isInCurrentMonth,
+  resetCalendarFromSpecialDay,
 } from '../../helper'
 import '../../utils/closest-polyfill'
 
@@ -51,6 +52,7 @@ class DatePicker extends Component {
     })
   }
 
+  /* eslint-disable no-underscore-dangle */
   onModalOpen = () => {
     this.setState({ showModal: true })
   }
@@ -75,7 +77,7 @@ class DatePicker extends Component {
   }
 
   onChangeModel = model => {
-    const { value } = this.state
+    const { value, year, month } = this.state
     let nextModel = model
     if (model === CHINESE_MODEL) {
       nextModel = WESTERN_MODEL
@@ -84,7 +86,7 @@ class DatePicker extends Component {
     }
 
     const weekTags = getWeekSort(nextModel)
-    const changeModelDays = getDaysOfMonth(_, _, nextModel)
+    const changeModelDays = getDaysOfMonth(year, month, nextModel)
     const afterSetDays = setSelectedDays(changeModelDays, value)
     this.setState({
       model: nextModel,
@@ -93,51 +95,50 @@ class DatePicker extends Component {
     })
   }
 
-  _onChangeYearOrMonth = (
-    changeYear,
-    changeMonth,
-    callback = noop,
-    format,
-  ) => {
-    const {
-      model, value, year, month,
-    } = this.state
-    const dayFormat = format || value
-    const days = getDaysAfterchangedYearOrMonth(changeYear, changeMonth, model)
-    const afterSetDays = setSelectedDays(days, dayFormat)
-    this.setState({
-      days: afterSetDays,
-      year: changeYear === _ ? year : changeYear,
-      month: changeMonth === _ ? month : changeMonth,
-      value: dayFormat,
-    }, () => {
-      callback()
-    })
+  _selectDayCallback = day => {
+    const { onSelectDate } = this.props
+    this.onModalClose()
+    onSelectDate(day)
   }
 
   onSelectDay = day => {
-    const { days, value } = this.state
-    if (!isInCurrentMonth(day.full, value)) {
-      const year = day.full.substring(0, 4)
-      const month = day.full.substring(5, 7)
-      /* eslint-disable no-underscore-dangle */
-      this._onChangeYearOrMonth(year, month, () => this.onModalClose(), day.full)
-    } else {
-      const afterSetDays = setSelectedDays(days, day.full)
-      this.setState({ value: day.full, days: afterSetDays }, () => this.onModalClose())
-    }
+    const {
+      days, value, year, month,
+    } = this.state
+    const specialDays = resetCalendarFromSpecialDay(days, day.full, value)
+    const { changeYear, changeMonth, afterDays } = specialDays
+    this.setState({
+      days: afterDays,
+      year: changeYear === _ ? year : changeYear,
+      month: changeMonth === _ ? month : changeMonth,
+      value: day.full,
+    }, () => this._selectDayCallback(day.full))
   }
 
   onSelectToday = today => {
-    const { days } = this.state
+    const { days, value } = this.state
     let renderDays = days
-    if (!isInCurrentMonth(today)) {
+    if (!isInCurrentMonth(today, value)) {
       // 不是在【今天】这个月份，需要重新换数据源
       renderDays = initialData.days
     }
 
     const afterSetDays = setSelectedDays(renderDays, today)
-    this.setState({ value: today, days: afterSetDays }, () => this.onModalClose())
+    this.setState({ value: today, days: afterSetDays },
+      () => this._selectDayCallback(today))
+  }
+
+  _onChangeYearOrMonth = (changeYear, changeMonth) => {
+    const { model, year, month } = this.state
+    const days = getDaysAfterchangedYearOrMonth(changeYear, changeMonth, model)
+    this.setState({
+      days: days,
+      year: changeYear === _ ? year : changeYear,
+      month: changeMonth === _ ? month : changeMonth,
+    }, () => {
+      // todo bug
+      this.forceUpdate()
+    })
   }
 
   onPrevMonth = () => {
@@ -159,11 +160,11 @@ class DatePicker extends Component {
 
   onNextYear = () => {
     const { year } = this.state
-    this._onChangeYearOrMonth(year + 1, _)
+    this._onChangeYearOrMonth(+year + 1, _)
   }
 
   render() {
-    const { inline } = this.props
+    const { inline, placeholder } = this.props
     const { value, showModal } = this.state
 
     return (
@@ -174,7 +175,7 @@ class DatePicker extends Component {
         >
           <input
             type="text"
-            placeholder="请选择日期"
+            placeholder={placeholder}
             className={Styles.input}
             value={value}
             onChange={e => this.onInputChange(e)}
@@ -192,6 +193,7 @@ class DatePicker extends Component {
           value={
             {
               ...this.state,
+              ...this.props,
               onSelectDay: this.onSelectDay,
               onSelectToday: this.onSelectToday,
               onChangeModel: this.onChangeModel,
@@ -215,6 +217,7 @@ class DatePicker extends Component {
 
 DatePicker.defaultProps = {
   inline: false,
+  placeholder: INPUT_DEFAULT_PLACEHOLDER,
   defaultDate: getDateFormatFromSepecificDate(),
   year: getCurrentYear(),
   month: getCurrentMonth(),
@@ -222,9 +225,11 @@ DatePicker.defaultProps = {
 
 DatePicker.propTypes = {
   inline: PropTypes.bool,
+  placeholder: PropTypes.string,
   defaultDate: PropTypes.string,
   year: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   month: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onSelectDate: PropTypes.func.isRequired,
 }
 
 export default DatePicker

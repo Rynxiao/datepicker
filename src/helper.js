@@ -140,3 +140,22 @@ export const getDaysAfterchangedYearOrMonth = (year = getCurrentYear(),
 export const isInCurrentMonth = (date, current = getCurrentDate()) => (
   date.substring(0, 7) === current.substring(0, 7)
 )
+
+export const resetCalendarFromSpecialDay = (originDays, date,
+  current = getCurrentDate(), model = CHINESE_MODEL) => {
+  let days = originDays
+  if (!isInCurrentMonth(date, current)) {
+    const year = date.substring(0, 4)
+    const month = date.substring(5, 7)
+    days = getDaysAfterchangedYearOrMonth(year, month, model)
+    const afterDays = setSelectedDays(days, date)
+    return {
+      afterDays: afterDays,
+      changeYear: year,
+      changeMonth: month,
+    }
+  }
+
+  const afterDays = setSelectedDays(days, date)
+  return { afterDays }
+}

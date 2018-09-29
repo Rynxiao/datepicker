@@ -8,3 +8,5 @@ export const noop = () => {}
 export const PREV_DAY = 'PREV_DAY'
 export const NEXT_DAY = 'NEXT_DAY'
 export const CURRENT_DAY = 'CURRENT_DAY'
+
+export const INPUT_DEFAULT_PLACEHOLDER = '请选择日期'
