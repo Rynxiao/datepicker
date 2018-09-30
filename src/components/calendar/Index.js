@@ -8,41 +8,52 @@ import {
 import { DateContext } from '../../context'
 import { withContext } from '../../utils'
 
-const Index = ({
-  context: {
-    weekTags, days, onSelectDay,
-  },
-}) => (
-  <div className={Styles.wrapper}>
-    { weekTags.map(weekName => (
-      <span
-        className={`${Styles.normal} ${Styles.week}`}
-        title={`星期${weekName}`}
-        key={weekName}
-      >
-        { weekName }
-      </span>
-    )) }
-    {
-      days.map(day => (
-        <span
-          className={classNames(Styles.normal, {
-            [Styles.prev]: day.tag === PREV_DAY,
-            [Styles.next]: day.tag === NEXT_DAY,
-            [Styles.current]: day.current,
-            [Styles.selected]: day.selected,
-          })}
-          title={day.full}
-          key={day.full}
-          onClick={e => onSelectDay(day, e)}
-          role="presentation"
-        >
-          { day.day }
-        </span>
-      ))
+class Index extends React.Component {
+  selectDay = (day, event) => {
+    if (day.disabled) {
+      return
     }
-  </div>
-)
+    const { context: { onSelectDay } } = this.props
+    onSelectDay(day, event)
+  }
+
+  render() {
+    const { context: { weekTags, days } } = this.props
+
+    return (
+      <div className={Styles.wrapper}>
+        { weekTags.map(weekName => (
+          <span
+            className={`${Styles.normal} ${Styles.week}`}
+            title={`星期${weekName}`}
+            key={weekName}
+          >
+            { weekName }
+          </span>
+        )) }
+        {
+          days.map(day => (
+            <span
+              className={classNames(Styles.normal, {
+                [Styles.prev]: day.tag === PREV_DAY,
+                [Styles.next]: day.tag === NEXT_DAY,
+                [Styles.current]: day.current,
+                [Styles.selected]: day.selected,
+                [Styles.disabled]: day.disabled,
+              })}
+              title={day.full}
+              key={day.full}
+              onClick={e => this.selectDay(day, e)}
+              role="presentation"
+            >
+              { day.day }
+            </span>
+          ))
+        }
+      </div>
+    )
+  }
+}
 
 Index.propTypes = {
   context: PropTypes.shape({

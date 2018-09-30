@@ -123,11 +123,45 @@ export const selectDayByIndex = (days, index) => days.map((day, idx) => {
   return tempDay
 })
 
-export const setSelectedDays = (days, selectedDay) => {
+const compareDate = (d1, d2) => {
+  let dNum1 = d1
+  let dNum2 = d2
+
+  if (typeof d1 === 'string') {
+    dNum1 = +d1.split(/[/\-\\:]/).join('')
+  }
+
+  if (typeof d2 === 'string') {
+    dNum2 = +d2.split(/[/\-\\:]/).join('')
+  }
+
+  if (dNum1 > dNum2) {
+    return 1
+  }
+
+  if (dNum1 < dNum2) {
+    return -1
+  }
+
+  return 0
+}
+
+export const setSelectedDaysAndRange = (days, selectedDay, disabledRange) => {
   const fDate = formatDate(selectedDay)
+  let range = disabledRange
+
+  if (!range) {
+    range = [0]
+  }
+
+  if (!range[1]) {
+    range.unshift(0)
+  }
+
   return days.map(day => {
     const tempDay = day
     tempDay.selected = day.full === fDate.format
+    tempDay.disabled = compareDate(day.full, range[0]) >= 0 && compareDate(day.full, range[1]) <= 0
     return tempDay
   })
 }
@@ -142,13 +176,13 @@ export const isInCurrentMonth = (date, current = getCurrentDate()) => (
 )
 
 export const resetCalendarFromSpecialDay = (originDays, date,
-  current = getCurrentDate(), model = CHINESE_MODEL) => {
+  current = getCurrentDate(), model = CHINESE_MODEL, disabledRange) => {
   let days = originDays
   if (!isInCurrentMonth(date, current)) {
     const year = date.substring(0, 4)
     const month = date.substring(5, 7)
     days = getDaysAfterchangedYearOrMonth(year, month, model)
-    const afterDays = setSelectedDays(days, date)
+    const afterDays = setSelectedDaysAndRange(days, date, disabledRange)
     return {
       afterDays: afterDays,
       changeYear: year,
@@ -156,6 +190,6 @@ export const resetCalendarFromSpecialDay = (originDays, date,
     }
   }
 
-  const afterDays = setSelectedDays(days, date)
+  const afterDays = setSelectedDaysAndRange(days, date, disabledRange)
   return { afterDays }
 }

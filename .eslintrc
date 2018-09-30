@@ -35,6 +35,7 @@
       "never"
     ],
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+    "no-unused-expressions": ["error", { "allowShortCircuit": true, "allowTernary": true }],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/require-extension": "off",
     "arrow-parens": ["error", "as-needed"],
