@@ -1,4 +1,4 @@
-import warnning from './warning'
+import { error } from './throw'
 import { weekMap } from '../const'
 
 /**
@@ -46,6 +46,14 @@ export const getCurrentDay = () => formatMonthOrDay(new Date().getDate())
 export const getCurrentDate = () => `${getCurrentYear()}-${getCurrentMonth()}-${getCurrentDay()}`
 
 /**
+ * 获取指定月份的天数
+ * @param {String} year 年份
+ * @param {String} month 月份
+ */
+export const getDaysCountOfMonth = (month = getCurrentMonth(),
+  year = getCurrentYear()) => new Date(year, month, 0).getDate()
+
+/**
  * 格式化日期
  * @param {String} date 日期
  */
@@ -62,13 +70,14 @@ export const formatDate = date => {
   let day = strArr[6] || strArr[10]
 
   if (+month > 12) {
-    warnning('month exceed max month number 12')
+    error('month exceed max month number 12')
     month = 12
   }
 
-  if (+day > 31) {
-    warnning('day exceed max day number 31')
-    day = 31
+  const countOfMonth = getDaysCountOfMonth(month, year)
+  if (+day > countOfMonth) {
+    error(`day exceed max day number ${countOfMonth}`)
+    day = countOfMonth
   }
 
   month = formatMonthOrDay(month)
@@ -114,14 +123,6 @@ export const getDayFromSepecificDate = (date = getCurrentDate()) => specificDate
  * @param {String} date 日期格式
  */
 export const getDateFormatFromSepecificDate = (date = getCurrentDate()) => specificDateAdapter(date)('format')
-
-/**
- * 获取指定月份的天数
- * @param {String} year 年份
- * @param {String} month 月份
- */
-export const getDaysCountOfMonth = (month = getCurrentMonth(),
-  year = getCurrentYear()) => new Date(year, month, 0).getDate()
 
 /**
  * 获取一月中的第一天是星期几

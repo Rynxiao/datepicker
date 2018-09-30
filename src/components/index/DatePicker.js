@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import Styles from './picker.css'
 import {
   getDateFormatFromSepecificDate,
@@ -196,7 +197,7 @@ class DatePicker extends Component {
   }
 
   render() {
-    const { inline, placeholder } = this.props
+    const { inline, placeholder, disable } = this.props
     const { value, showModal } = this.state
 
     return (
@@ -205,14 +206,18 @@ class DatePicker extends Component {
           className={Styles.container}
           style={inline ? { display: 'inline-block' } : {}}
         >
-          <input
-            type="text"
-            placeholder={placeholder}
-            className={Styles.input}
-            value={value}
-            onChange={e => this.onInputChange(e)}
-            onFocus={e => this.onModalOpen(e)}
-          />
+          <span className={Styles.inputWrapper}>
+            <input
+              type="text"
+              disabled={disable}
+              readOnly={disable}
+              placeholder={placeholder}
+              className={classNames(Styles.input, { [Styles.disable]: disable })}
+              value={value}
+              onChange={e => this.onInputChange(e)}
+              onFocus={e => this.onModalOpen(e)}
+            />
+          </span>
           <i className={Styles.calendar} />
           <i
             className={Styles.close}
@@ -221,6 +226,7 @@ class DatePicker extends Component {
           />
           <div className={Styles.line} />
         </div>
+        { disable && <div className={Styles.inputDisable} /> }
         <DateContext.Provider
           value={
             {
@@ -253,6 +259,7 @@ DatePicker.defaultProps = {
   defaultDate: getDateFormatFromSepecificDate(),
   year: getCurrentYear(),
   month: getCurrentMonth(),
+  disable: false,
 }
 
 DatePicker.propTypes = {
@@ -262,6 +269,7 @@ DatePicker.propTypes = {
   year: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   month: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onSelectDate: PropTypes.func.isRequired,
+  disable: PropTypes.bool,
 }
 
 export default DatePicker

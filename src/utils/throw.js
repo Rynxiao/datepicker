@@ -4,7 +4,7 @@
  * @param {String} message The warning message.
  * @returns {void}
  */
-export function warning(message) {
+export const warnning = message => {
   /* eslint-disable no-console */
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
     console.error(message)
@@ -16,4 +16,13 @@ export function warning(message) {
     // it would pause the execution at this line.
     throw new Error(message)
   } catch (e) {} // eslint-disable-line no-empty
+}
+
+export const error = message => {
+  /* eslint-disable no-console */
+  if (typeof console !== 'undefined' && typeof console.error === 'function') {
+    console.error(message)
+  }
+  /* eslint-enable no-console */
+  throw new Error(message)
 }
