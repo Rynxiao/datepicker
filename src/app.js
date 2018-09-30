@@ -5,6 +5,7 @@ import DatePicker from './index'
 
 const App = () => (
   <DatePicker
+    defaultDate="2018-01-01"
     placeholder="please choose date"
     onSelectDate={day => console.log(day)}
   />

@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Styles from './input.css'
 import { DateContext } from '../../context'
+import { withContext } from '../../utils'
 
 class Input extends React.Component {
   constructor(props) {
@@ -13,25 +15,29 @@ class Input extends React.Component {
   }
 
   render() {
+    const { context: { value, placeholder, onInputChange } } = this.props
+
     return (
-      <DateContext.Consumer>
-        {
-          ({ value, placeholder, onInputChange }) => (
-            <div className={Styles.wrapper}>
-              <input
-                ref={this.textInput}
-                className={Styles.input}
-                type="text"
-                placeholder={placeholder}
-                value={value}
-                onChange={e => onInputChange(e)}
-              />
-            </div>
-          )
-        }
-      </DateContext.Consumer>
+      <div className={Styles.wrapper}>
+        <input
+          ref={this.textInput}
+          className={Styles.input}
+          type="text"
+          placeholder={placeholder}
+          value={value}
+          onChange={e => onInputChange(e)}
+        />
+      </div>
     )
   }
 }
 
-export default Input
+Input.propTypes = {
+  context: PropTypes.shape({
+    value: PropTypes.string.isRequired,
+    placeholder: PropTypes.string.isRequired,
+    onInputChange: PropTypes.func.isRequired,
+  }).isRequired,
+}
+
+export default withContext(DateContext, Input)

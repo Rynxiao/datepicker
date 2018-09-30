@@ -6,6 +6,8 @@ import {
   getCurrentYear,
   getCurrentMonth,
   isDateValid,
+  getYearFromSpecificDate,
+  getMonthFromSpecificDate,
 } from '../../utils'
 import Modal from '../modal/Modal'
 import {
@@ -24,6 +26,7 @@ import {
 } from '../../helper'
 import '../../utils/closest-polyfill'
 
+/* eslint-disable no-underscore-dangle */
 class DatePicker extends Component {
   constructor(props) {
     super(props)
@@ -38,21 +41,11 @@ class DatePicker extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('click', event => {
-      if (event.target.closest('.picker-wrapper')) {
-        return
-      }
-
-      const { value } = this.state
-      if (!isDateValid(value)) {
-        this.onSelectToday(getDateFormatFromSepecificDate())
-      } else {
-        this.onModalClose()
-      }
-    })
+    const { value } = this.state
+    this._onInitialDefaultDay({ full: value })
+    this._addGlobalClickListener()
   }
 
-  /* eslint-disable no-underscore-dangle */
   onModalOpen = () => {
     this.setState({ showModal: true })
   }
@@ -116,28 +109,39 @@ class DatePicker extends Component {
   }
 
   onSelectToday = today => {
-    const { days, value } = this.state
+    const {
+      days, value, year, month,
+    } = this.state
     let renderDays = days
+    let changeYear = year
+    let changeMonth = month
+
     if (!isInCurrentMonth(today, value)) {
       // 不是在【今天】这个月份，需要重新换数据源
       renderDays = initialData.days
+      changeYear = getYearFromSpecificDate(today)
+      changeMonth = getMonthFromSpecificDate(today)
     }
 
     const afterSetDays = setSelectedDays(renderDays, today)
-    this.setState({ value: today, days: afterSetDays },
-      () => this._selectDayCallback(today))
+    this.setState({
+      value: today,
+      days: afterSetDays,
+      year: changeYear,
+      month: changeMonth,
+    }, () => this._selectDayCallback(today))
   }
 
   _onChangeYearOrMonth = (changeYear, changeMonth) => {
-    const { model, year, month } = this.state
+    const {
+      model, year, month, value,
+    } = this.state
     const days = getDaysAfterchangedYearOrMonth(changeYear, changeMonth, model)
+    const afterSetDays = setSelectedDays(days, value)
     this.setState({
-      days: days,
+      days: afterSetDays,
       year: changeYear === _ ? year : changeYear,
       month: changeMonth === _ ? month : changeMonth,
-    }, () => {
-      // todo bug
-      this.forceUpdate()
     })
   }
 
@@ -161,6 +165,34 @@ class DatePicker extends Component {
   onNextYear = () => {
     const { year } = this.state
     this._onChangeYearOrMonth(+year + 1, _)
+  }
+
+  _addGlobalClickListener() {
+    document.addEventListener('click', event => {
+      if (event.target.closest('.picker-wrapper')) {
+        return
+      }
+
+      const { value } = this.state
+      if (!isDateValid(value)) {
+        this.onSelectToday(getDateFormatFromSepecificDate())
+      } else {
+        this.onModalClose()
+      }
+    })
+  }
+
+  _onInitialDefaultDay() {
+    const {
+      days, value, year, month,
+    } = this.state
+    const specialDays = resetCalendarFromSpecialDay(days, value)
+    const { changeYear, changeMonth, afterDays } = specialDays
+    this.setState({
+      days: afterDays,
+      year: changeYear === _ ? year : changeYear,
+      month: changeMonth === _ ? month : changeMonth,
+    })
   }
 
   render() {
@@ -192,8 +224,8 @@ class DatePicker extends Component {
         <DateContext.Provider
           value={
             {
-              ...this.state,
               ...this.props,
+              ...this.state,
               onSelectDay: this.onSelectDay,
               onSelectToday: this.onSelectToday,
               onChangeModel: this.onChangeModel,
