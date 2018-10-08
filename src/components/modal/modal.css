@@ -57,6 +57,9 @@
   z-index: 9;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
+.month-container {
+  z-index: 10;
+}
 .in {
   animation: slideDownIn 0.2s;
 }
@@ -65,4 +68,11 @@
 }
 .panel {
   position: relative;
+}
+.month-panel {
+  height: 100%;
+  min-height: 298px;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-rows: 35px auto;
 }

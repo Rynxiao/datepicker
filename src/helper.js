@@ -1,5 +1,5 @@
 import {
-  weekMap, CHINESE_MODEL, PREV_DAY, CURRENT_DAY, NEXT_DAY,
+  weekMap, CHINESE_MODEL, PREV_DAY, CURRENT_DAY, NEXT_DAY, monthMap,
 } from './const'
 import {
   getWeekOfMonth,
@@ -192,4 +192,66 @@ export const resetCalendarFromSpecialDay = (originDays, date,
 
   const afterDays = setSelectedDaysAndRange(days, date, disabledRange)
   return { afterDays }
+}
+
+export const getDecadeByGivenYear = year => {
+  const tempYear = +year
+  const factor = Math.floor(tempYear / 10)
+  const result = []
+
+  for (let i = -1; i <= 10; i++) {
+    const r = 10 * factor + i
+
+    if (i === -1) {
+      result.push({
+        flag: 'prev',
+        value: r,
+        code: r,
+      })
+    } else if (r < tempYear) {
+      result.push({
+        flag: 'normal',
+        value: r,
+        code: r,
+      })
+    } else if (r === tempYear) {
+      result.push({
+        flag: 'current',
+        value: r,
+        code: r,
+      })
+    } else if (i === 10) {
+      result.push({
+        flag: 'next',
+        value: r,
+        code: r,
+      })
+    } else {
+      result.push({
+        flag: 'normal',
+        value: r,
+        code: r,
+      })
+    }
+  }
+  return result
+}
+
+export const getChineseMonth = month => {
+  const months = [...monthMap.values()]
+  return months.map((m, i) => {
+    const code = i + 1
+    if (code === +month) {
+      return {
+        flag: 'current',
+        value: m,
+        code: code,
+      }
+    }
+    return {
+      flag: 'normal',
+      value: m,
+      code: code,
+    }
+  })
 }

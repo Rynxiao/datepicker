@@ -116,7 +116,6 @@ class DatePicker extends Component {
 
     const weekTags = getWeekSort(nextModel)
     const changeModelDays = getDaysOfMonth(year, month, nextModel)
-    // debugger
     this._setDateFromSepcialDay(
       { originDays: changeModelDays, setDay: value, currentDay: value },
       { model: nextModel, weekTags: weekTags },
@@ -268,10 +267,7 @@ class DatePicker extends Component {
           }
         }
       >
-        <Modal
-          isMounted={showModal}
-          delayTime={200}
-        />
+        <Modal isMounted={showModal} delayTime={200} />
       </DateContext.Provider>
     )
   }

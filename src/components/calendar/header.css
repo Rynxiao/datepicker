@@ -5,6 +5,9 @@
   grid-auto-rows: 34px;
   border-bottom: 1px solid #e8e8e8;
 }
+.wrapper-3 {
+  grid-template-columns: 25px auto 25px;
+}
 .wrapper i {
   cursor: pointer;
 }
