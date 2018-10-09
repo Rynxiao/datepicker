@@ -194,46 +194,42 @@ export const resetCalendarFromSpecialDay = (originDays, date,
   return { afterDays }
 }
 
-export const getDecadeByGivenYear = year => {
-  const tempYear = +year
-  const factor = Math.floor(tempYear / 10)
-  const result = []
+export const getDecadeByGivenYear = (decade, year) => {
+  const tempDecade = +decade
+  const factor = Math.floor(tempDecade / 10)
+  const result = Array(12).fill({})
 
-  for (let i = -1; i <= 10; i++) {
+  result[0] = {
+    flag: 'prev',
+    value: 10 * factor - 1,
+    code: 10 * factor - 1,
+  }
+
+  result[11] = {
+    flag: 'next',
+    value: 10 * (factor + 1),
+    code: 10 * (factor + 1),
+  }
+
+  for (let i = 0; i <= 9; i++) {
     const r = 10 * factor + i
-
-    if (i === -1) {
-      result.push({
-        flag: 'prev',
-        value: r,
-        code: r,
-      })
-    } else if (r < tempYear) {
-      result.push({
-        flag: 'normal',
-        value: r,
-        code: r,
-      })
-    } else if (r === tempYear) {
-      result.push({
+    /* eslint-disable eqeqeq */
+    if (r === tempDecade && year == tempDecade) {
+      /* eslint-enable eqeqeq */
+      result[i + 1] = {
         flag: 'current',
         value: r,
         code: r,
-      })
-    } else if (i === 10) {
-      result.push({
-        flag: 'next',
-        value: r,
-        code: r,
-      })
+      }
     } else {
-      result.push({
+      result[i + 1] = {
         flag: 'normal',
         value: r,
         code: r,
-      })
+      }
     }
   }
+
   return result
 }
 

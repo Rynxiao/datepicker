@@ -11,11 +11,13 @@ import { getDecadeByGivenYear, getChineseMonth } from '../../helper'
 
 class MonthModal extends React.Component {
   _getRenderBody = () => {
-    const { year, month, mode } = this.props
+    const {
+      year, decade, month, mode,
+    } = this.props
     if (mode === MONTH_MODE) {
       return getChineseMonth(month)
     }
-    return getDecadeByGivenYear(year)
+    return getDecadeByGivenYear(decade, year)
   }
 
   _getPrevAndNextTitles = () => {
@@ -49,7 +51,7 @@ class MonthModal extends React.Component {
           <span
             role="presentation"
             className={classNames({ [HeaderStyles.link]: mode === MONTH_MODE })}
-            onClick={mode === MONTH_DECADE_MODE ? noop : e => onChangeMode(e)}
+            onClick={mode === MONTH_DECADE_MODE ? noop : e => onChangeMode(mode, e)}
           >
             {title}
           </span>
@@ -92,15 +94,15 @@ class MonthModal extends React.Component {
   }
 
   render() {
-    const { isMounted } = this.props
+    const { isMounted, animation } = this.props
 
     return (
       <React.Fragment>
         <div className={classNames(
           `${Styles.container} ${Styles.monthContainer}`,
           {
-            [Styles.in]: isMounted,
-            [Styles.out]: !isMounted,
+            [Styles.in]: animation && isMounted,
+            [Styles.out]: animation && !isMounted,
           },
         )}
         >
@@ -116,12 +118,15 @@ class MonthModal extends React.Component {
 
 MonthModal.defaultProps = {
   isMounted: false,
+  animation: true,
 }
 
 MonthModal.propTypes = {
   isMounted: PropTypes.bool,
+  animation: PropTypes.bool,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   year: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  decade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   month: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   mode: PropTypes.string.isRequired,
   onPrev: PropTypes.func.isRequired,

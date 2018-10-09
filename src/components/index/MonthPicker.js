@@ -7,7 +7,9 @@ import {
   MONTH_DEFAULT_PLACEHOLDER, noop, MONTH_MODE, MONTH_DECADE_MODE,
 } from '../../const'
 import MonthModal from '../modal/MonthModal'
-import { getCurrentYear, getCurrentMonth, formatMonthOrDay } from '../../utils'
+import {
+  getCurrentYear, getCurrentMonth, formatMonthOrDay,
+} from '../../utils'
 
 class MonthPicker extends React.Component {
   constructor(props) {
@@ -17,9 +19,18 @@ class MonthPicker extends React.Component {
       showModal: false,
       year: year,
       month: month,
+      decade: year,
       mode: MONTH_MODE,
       value: `${year}-${formatMonthOrDay(month)}`,
     }
+  }
+
+  componentDidMount() {
+    this._addGlobalClickListener()
+  }
+
+  componentWillUnmount() {
+    this._removeGlobalClickListener()
   }
 
   onModalOpen = () => {
@@ -47,43 +58,67 @@ class MonthPicker extends React.Component {
   onSelectYearOrMonth = val => {
     const { mode } = this.state
     if (mode === MONTH_DECADE_MODE) {
-      this.setState({ mode: MONTH_MODE, year: val })
+      this.setState({ mode: MONTH_MODE, year: val, decade: val })
     } else {
       const { year } = this.state
-      this.setState({ month: val, value: `${year}-${formatMonthOrDay(val)}` }, () => this.onModalClose())
+      const { onSelectMonth } = this.props
+      this.setState({ month: val, value: `${year}-${formatMonthOrDay(val)}` }, () => {
+        onSelectMonth(`${year}-${formatMonthOrDay(val)}`)
+        this.onModalClose()
+      })
     }
   }
 
   onPrev = () => {
     const { mode } = this.state
     if (mode === MONTH_DECADE_MODE) {
-      console.log('MONTH_DECADE_MODE')
+      const { decade } = this.state
+      this.setState({ decade: +decade - 10 })
     } else {
       const { year } = this.state
-      this.setState({ year: +year - 1 })
+      this.setState({ year: +year - 1, decade: +year - 1 })
     }
   }
 
   onNext = () => {
     const { mode } = this.state
     if (mode === MONTH_DECADE_MODE) {
-      console.log('MONTH_DECADE_MODE')
+      const { decade } = this.state
+      this.setState({ decade: +decade + 10 })
     } else {
       const { year } = this.state
-      this.setState({ year: +year + 1 })
+      this.setState({ year: +year + 1, decade: +year + 1 })
     }
   }
 
+  _addGlobalClickListener() {
+    this.globalClickListener = document.addEventListener('click', event => {
+      if (event.target.closest('#monthPickerWrapper')) {
+        return
+      }
+
+      // hack
+      const cNames = event.target.className
+      const { mode } = this.state
+      if (cNames.includes('month__td') && mode === MONTH_MODE) {
+        return
+      }
+
+      this.onModalClose()
+    })
+  }
+
+  _removeGlobalClickListener() {
+    document.removeEventListener('click', this.globalClickListener)
+  }
+
   renderInput = () => {
-    const { inline, placeholder, disable } = this.props
+    const { placeholder, disable } = this.props
     const { value } = this.state
 
     return (
       <React.Fragment>
-        <div
-          className={Styles.container}
-          style={inline ? { display: 'inline-block' } : {}}
-        >
+        <div className={Styles.container}>
           <span className={Styles.inputWrapper}>
             <input
               type="text"
@@ -111,7 +146,7 @@ class MonthPicker extends React.Component {
 
   renderModal = () => {
     const {
-      showModal, year, month, mode,
+      showModal, year, month, mode, decade,
     } = this.state
     return (
       <MonthModal
@@ -119,6 +154,7 @@ class MonthPicker extends React.Component {
         delayTime={200}
         year={year}
         month={month}
+        decade={decade}
         title={this._getTitleByMode(mode)}
         mode={mode}
         onChangeMode={this.onChangeMode}
@@ -130,8 +166,13 @@ class MonthPicker extends React.Component {
   }
 
   render() {
+    const { inline } = this.props
     return (
-      <div className={`picker-wrapper ${Styles.wrapper}`}>
+      <div
+        id="monthPickerWrapper"
+        className={`${Styles.wrapper}`}
+        style={inline ? { display: 'inline-block' } : {}}
+      >
         { this.renderInput() }
         { this.renderModal() }
       </div>
@@ -153,6 +194,7 @@ MonthPicker.propTypes = {
   year: PropTypes.string,
   month: PropTypes.string,
   disable: PropTypes.bool,
+  onSelectMonth: PropTypes.func.isRequired,
 }
 
 export default MonthPicker

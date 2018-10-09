@@ -1,3 +1,9 @@
 :global(.container) {
   width: 170px;
+  margin: 70px auto;
+}
+:global(.container > p) {
+  margin-top: 120px;
+  font-size: 16px;
+  font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }

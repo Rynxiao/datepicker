@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-update-set-state */
 import React from 'react'
 
 export default function delayUnmounting(Component) {
@@ -11,11 +12,13 @@ export default function delayUnmounting(Component) {
     }
 
     componentDidUpdate(prevProps) {
-      const { isMounted, delayTime } = this.props
+      const { isMounted, delayTime, animation } = this.props
       if (prevProps.isMounted && !isMounted) {
-        setTimeout(() => this.setState({ shouldRender: false }), delayTime)
+        if (animation) {
+          setTimeout(() => this.setState({ shouldRender: false }), delayTime)
+        }
+        this.setState({ shouldRender: false })
       } else if (!prevProps.isMounted && isMounted) {
-        /* eslint-disable react/no-did-update-set-state */
         this.setState({ shouldRender: true })
       }
     }

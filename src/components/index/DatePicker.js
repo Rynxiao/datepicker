@@ -8,10 +8,17 @@ import {
   getCurrentMonth,
   isDateValid,
   getCurrentDate,
+  formatMonthOrDay,
 } from '../../utils'
 import Modal from '../modal/Modal'
 import {
-  CHINESE_MODEL, WESTERN_MODEL, _, INPUT_DEFAULT_PLACEHOLDER, noop,
+  CHINESE_MODEL,
+  WESTERN_MODEL,
+  _,
+  INPUT_DEFAULT_PLACEHOLDER,
+  noop,
+  MONTH_MODE,
+  MONTH_DECADE_MODE,
 } from '../../const'
 import { DateContext, initialData } from '../../context'
 import {
@@ -23,7 +30,6 @@ import {
   isInCurrentMonth,
   resetCalendarFromSpecialDay,
 } from '../../helper'
-import '../../utils/closest-polyfill'
 
 /* eslint-disable no-underscore-dangle */
 class DatePicker extends Component {
@@ -35,6 +41,10 @@ class DatePicker extends Component {
       month: month,
       value: defaultDate,
       showModal: false,
+      showMonthModal: false,
+      decade: year,
+      mode: MONTH_MODE,
+      monthValue: `${year}-${formatMonthOrDay(month)}`,
       ...initialData,
     }
   }
@@ -189,9 +199,65 @@ class DatePicker extends Component {
     this._onChangeYearOrMonth(+year + 1, month)
   }
 
+  onMonthModalOpen = mode => {
+    this.setState({ mode: mode, showMonthModal: true })
+  }
+
+  onMonthModalClose = () => {
+    this.setState({ showMonthModal: false })
+  }
+
+  onChangeMode = mode => {
+    if (mode === MONTH_MODE) {
+      this.setState({ mode: MONTH_DECADE_MODE })
+    }
+  }
+
+  onSelectYearOrMonth = val => {
+    const { mode } = this.state
+    if (mode === MONTH_DECADE_MODE) {
+      this.setState({ mode: MONTH_MODE, year: val, decade: val })
+    } else {
+      const { year } = this.state
+      this.setState({ month: val, monthValue: `${year}-${formatMonthOrDay(val)}` }, () => {
+        this._onChangeYearOrMonth(year, val)
+        this.onMonthModalClose()
+      })
+    }
+  }
+
+  onPrev = () => {
+    const { mode } = this.state
+    if (mode === MONTH_DECADE_MODE) {
+      const { decade } = this.state
+      this.setState({ decade: +decade - 10 })
+    } else {
+      const { year } = this.state
+      this.setState({ year: +year - 1, decade: +year - 1 })
+    }
+  }
+
+  onNext = () => {
+    const { mode } = this.state
+    if (mode === MONTH_DECADE_MODE) {
+      const { decade } = this.state
+      this.setState({ decade: +decade + 10 })
+    } else {
+      const { year } = this.state
+      this.setState({ year: +year + 1, decade: +year + 1 })
+    }
+  }
+
   _addGlobalClickListener() {
     this.globalClickListener = document.addEventListener('click', event => {
       if (event.target.closest('.picker-wrapper')) {
+        return
+      }
+
+      // hack
+      const cNames = event.target.className
+      const { mode } = this.state
+      if (cNames.includes('month__td') && mode === MONTH_MODE) {
         return
       }
 
@@ -214,15 +280,12 @@ class DatePicker extends Component {
   }
 
   renderInput = () => {
-    const { inline, placeholder, disable } = this.props
+    const { placeholder, disable } = this.props
     const { value } = this.state
 
     return (
       <React.Fragment>
-        <div
-          className={Styles.container}
-          style={inline ? { display: 'inline-block' } : {}}
-        >
+        <div className={Styles.container}>
           <span className={Styles.inputWrapper}>
             <input
               type="text"
@@ -264,6 +327,11 @@ class DatePicker extends Component {
             onNextMonth: this.onNextMonth,
             onNextYear: this.onNextYear,
             onInputChange: this.onInputChange,
+            onChangeMode: this.onChangeMode,
+            onSelectYearOrMonth: this.onSelectYearOrMonth,
+            onPrev: this.onPrev,
+            onNext: this.onNext,
+            onMonthModalOpen: this.onMonthModalOpen,
           }
         }
       >
@@ -273,8 +341,12 @@ class DatePicker extends Component {
   }
 
   render() {
+    const { inline } = this.props
     return (
-      <div className={`picker-wrapper ${Styles.wrapper}`}>
+      <div
+        className={`picker-wrapper ${Styles.wrapper}`}
+        style={inline ? { display: 'inline-block' } : {}}
+      >
         { this.renderInput() }
         { this.renderModal() }
       </div>

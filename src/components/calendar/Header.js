@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Styles from './header.css'
 import { DateContext } from '../../context'
 import { withContext, formatMonthOrDay } from '../../utils'
+import { MONTH_DECADE_MODE, MONTH_MODE } from '../../const'
 
 const Header = ({
   context: {
@@ -12,14 +13,15 @@ const Header = ({
     onPrevYear,
     onNextMonth,
     onNextYear,
+    onMonthModalOpen,
   },
 }) => (
   <div className={Styles.wrapper}>
     <i className={Styles.prevYear} role="presentation" title="上一年" onClick={e => onPrevYear(e)} />
     <i className={Styles.prevMonth} role="presentation" title="上一月" onClick={e => onPrevMonth(e)} />
     <div className={Styles.text}>
-      <span className={Styles.link}>{`${year}年`}</span>
-      <span className={Styles.link}>{`${formatMonthOrDay(month)}月`}</span>
+      <span className={Styles.link} role="presentation" onClick={e => onMonthModalOpen(MONTH_DECADE_MODE, e)}>{`${year}年`}</span>
+      <span className={Styles.link} role="presentation" onClick={e => onMonthModalOpen(MONTH_MODE, e)}>{`${formatMonthOrDay(month)}月`}</span>
     </div>
     <i className={Styles.nextMonth} role="presentation" title="下一月" onClick={e => onNextMonth(e)} />
     <i className={Styles.nextYear} role="presentation" title="下一年" onClick={e => onNextYear(e)} />
@@ -34,6 +36,7 @@ Header.propTypes = {
     onPrevYear: PropTypes.func.isRequired,
     onNextMonth: PropTypes.func.isRequired,
     onNextYear: PropTypes.func.isRequired,
+    onMonthModalOpen: PropTypes.func.isRequired,
   }).isRequired,
 }
 
