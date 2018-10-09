@@ -2,8 +2,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 // import DatePicker from './index'
-import DatePicker from 'rt-datepicker'
-import './styles/index.css'
+import DatePicker from '../lib'
+import '../src/styles/index.css'
 
 const { MonthPicker } = DatePicker
 

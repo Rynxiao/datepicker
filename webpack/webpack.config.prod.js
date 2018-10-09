@@ -6,7 +6,10 @@ const projectPath = path.resolve(__dirname, '../')
 
 module.exports = {
   mode: 'production',
-  entry: './src/app.js',
+  entry: {
+    index: './src/app.js',
+    vendor: ['react', 'react-dom', 'prop-types', 'classnames'],
+  },
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: '[name]-bundle-[hash:8].js',

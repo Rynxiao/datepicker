@@ -32,6 +32,7 @@ $ git checkout v1.0.0
 
 ```javascript
 // datepicker
+import DatePicker from 'rt-datepicker'
 
 <DatePicker onSelectDate={day => console.log(day)} />
 
@@ -74,6 +75,9 @@ const disabledDate = current => (
 />
 
 // monthpicker
+import DatePicker from 'rt-datepicker'
+const { MonthPicker } = DatePicker
+
 <MonthPicker
   disable
   inline
