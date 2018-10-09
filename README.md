@@ -25,14 +25,88 @@ $ git checkout v1.0.0
 - [x] 禁止选择模式
 - [x] 设置禁用起始日期以及结束日期
 - [x] 基本选择日期功能
-- [ ] 年模式
-- [ ] 月模式
-- [ ] 中国农历月份
+- [x] 年模式
+- [x] 月模式
 
-### 待完善
+### 基本用法
 
-- [ ] 案例制作
-- [ ] 使用文档完善
+```javascript
+// datepicker
+
+<DatePicker onSelectDate={day => console.log(day)} />
+
+// inline
+<DatePicker
+  inline
+  onSelectDate={day => console.log(day)}
+/>
+
+// default
+<DatePicker
+  defaultDate="2018-01-31"
+  onSelectDate={day => console.log(day)}
+/>
+
+// placeholder
+<DatePicker
+  placeholder="please choose date"
+  onSelectDate={day => console.log(day)}
+/>
+
+// disable
+<DatePicker
+  disable
+  onSelectDate={day => console.log(day)}
+/>
+
+// disabale date
+const disabledDate = current => (
+  // start & end
+  ['2018-01-02', current]
+
+  // end
+  // [current]
+)
+
+<DatePicker
+  disabledDate={current => disabledDate(current)}
+  onSelectDate={day => console.log(day)}
+/>
+
+// monthpicker
+<MonthPicker
+  disable
+  inline
+  placeholder="Select month"
+  year="2018"
+  month="01"
+  onSelectMonth={month => console.log(month)}
+/>
+```
+
+### 属性列表
+
+`DatePicker`
+
+属性 | 类型 | 释义
+---|---|---
+inline | string | 是否行展示
+disable | bool | 禁止选择
+disabledDate | func | 禁止选择日期的区间(返回一个数组)
+defaultDate | string | 默认日期
+placeholder | string | placeholder
+onSelectDate | func | 选择日期后的回调
+
+`MonthPicker`
+
+属性 | 类型 | 释义
+---|---|---
+inline | string | 是否行展示
+disable | bool | 禁止选择
+year | string | 默认年份
+month | string | 默认月份
+placeholder | string | placeholder
+onSelectMonth | func | 选择月份后的回调
 
 ### node及npm版本
 
