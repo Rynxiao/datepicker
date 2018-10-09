@@ -9,7 +9,7 @@ $ git checkout v1.0.0
 ```
 ## 重构之后版本 
 
-`tag` v2.0.0（目前在master上开发，待基本功能完善推到此TAG）
+`tag` v2.0.0
 
 ### UI
 
