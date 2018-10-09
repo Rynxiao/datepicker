@@ -31,6 +31,10 @@ $ git checkout v1.0.0
 ### 基本用法
 
 ```javascript
+// install package
+npm install rt-datepicker@lastest
+yarn add rt-datepicker@lastest
+
 // datepicker
 import DatePicker from 'rt-datepicker'
 
