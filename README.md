@@ -9,7 +9,12 @@ $ git checkout v1.0.0
 ```
 ## 重构之后版本 
 
-`tag` v2.0.0
+样式没有采用预处理器，而是使用`CSS Modules`，部分布局采用的是`CSS Grid`布局，因此在兼容性上请使用比较新的浏览器
+
+关于`CSS Modules`以及`CSS Grid`可以查看我之前的两篇文章：
+
+- [CSS Modules入门教程](https://www.cnblogs.com/rynxiao/p/9538058.html)
+- [CSS Grid 读书笔记](https://www.cnblogs.com/rynxiao/p/9674944.html)
 
 ### UI
 
